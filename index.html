@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Absensi Karyawan</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js"></script>
+    <script src="script.js" defer></script>
 </head>
 <body>
 
@@ -80,13 +83,13 @@
 
         <div id="pendaftaran-karyawan" class="content">
             <h2>Pendaftaran Karyawan</h2>
-            <form onsubmit="return tambahKaryawan(event)">
+            <form id="form-pendaftaran" onsubmit="return tambahKaryawan(event)">
                 <div class="form-group">
                     <label for="nama">Nama Karyawan:</label>
                     <input type="text" id="nama" name="nama" required>
                 </div>
                 <div class="form-group">
-                    <button type="submit">Daftar</button>
+                    <button type="submit" id="daftar-karyawan-button">Daftar</button>
                 </div>
             </form>
         </div>
@@ -102,8 +105,8 @@
                     <button type="submit">Lihat Laporan</button>
                 </div>
             </form>
-            <ul id="laporan-list">
-                <!-- Daftar laporan harian akan ditampilkan di sini -->
+            <ul id="laporan-harian-list">
+                <!-- Daftar laporan akan ditampilkan di sini -->
             </ul>
         </div>
 
@@ -115,14 +118,5 @@
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
-     <!-- Firebase App (SDK) -->
-     <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
-
-     <!-- Firebase Realtime Database (SDK) -->
-     <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js"></script>
- 
-    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js"></script>
-    <script src="script.js"></script>
 </body>
 </html>

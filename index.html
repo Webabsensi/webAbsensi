@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Absensi Karyawan</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js"></script>
-    <script src="script.js" defer></script>
 </head>
 <body>
 
@@ -44,7 +41,9 @@
             <form onsubmit="return simpanAbsensi(event)">
                 <div class="form-group">
                     <label for="nama-absensi">Nama Karyawan:</label>
-                    <input type="text" id="nama-absensi" name="nama-absensi" required>
+                    <select id="nama-absensi" name="nama-absensi" required>
+                        <!-- Nama karyawan akan diisi dari Firebase -->
+                    </select>
                 </div>
                 
                 <!-- Pilihan kehadiran -->
@@ -80,16 +79,16 @@
                 </div>
             </form>
         </div>
-
+        
         <div id="pendaftaran-karyawan" class="content">
             <h2>Pendaftaran Karyawan</h2>
-            <form id="form-pendaftaran" onsubmit="return tambahKaryawan(event)">
+            <form onsubmit="return tambahKaryawan(event)">
                 <div class="form-group">
                     <label for="nama">Nama Karyawan:</label>
                     <input type="text" id="nama" name="nama" required>
                 </div>
                 <div class="form-group">
-                    <button type="submit" id="daftar-karyawan-button">Daftar</button>
+                    <button type="submit">Daftar</button>
                 </div>
             </form>
         </div>
@@ -105,9 +104,6 @@
                     <button type="submit">Lihat Laporan</button>
                 </div>
             </form>
-            <ul id="laporan-harian-list">
-                <!-- Daftar laporan akan ditampilkan di sini -->
-            </ul>
         </div>
 
         <div id="nama-karyawan" class="content">
@@ -118,5 +114,8 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

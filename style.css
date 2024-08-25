@@ -16,24 +16,18 @@ body {
 
 /* Style untuk navbar */
 .navbar {
-    overflow: hidden;
+    display: flex; /* Menggunakan flexbox untuk sejajarkan item */
     background-color: #333;
 }
 
 .navbar a, .dropdown {
-    float: left;
-    display: block;
     color: white;
     text-align: center;
     padding: 14px 16px; /* Padding yang konsisten pada semua item */
     text-decoration: none;
     line-height: 20px; /* Menyelaraskan teks secara vertikal */
     box-sizing: border-box; /* Menambahkan box-sizing untuk konsistensi */
-}
-
-.navbar a {
-    /* Menambahkan style khusus untuk a yang bukan dropdown */
-    line-height: 20px;
+    flex: 1; /* Membuat item memiliki ukuran yang sama dan lurus */
 }
 
 .navbar a:hover, .dropdown:hover .dropdown-content {
@@ -59,7 +53,6 @@ body {
 }
 
 .dropdown-content a {
-    float: none;
     color: black;
     padding: 12px 16px;
     text-decoration: none;

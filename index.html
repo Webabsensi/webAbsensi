@@ -35,49 +35,51 @@
             <h2>Menu Utama</h2>
             <p>Selamat datang di aplikasi absensi karyawan. Silakan pilih menu yang tersedia untuk mulai menggunakan aplikasi.</p>
         </div>
-<div id="absensi-karyawan" class="content">
-    <h2>Absensi Karyawan</h2>
-    <form onsubmit="return simpanAbsensi(event)">
-        <div class="form-group">
-            <label for="nama-absensi">Nama Karyawan:</label>
-            <input type="text" id="nama-absensi" name="nama-absensi" required>
-        </div>
-        
-        <!-- Pilihan kehadiran -->
-        <div class="form-group">
-            <label>Status Kehadiran:</label>
-            <input type="radio" id="hadir" name="kehadiran" value="Hadir" onchange="toggleKeterangan('hadir')" required>
-            <label for="hadir">Hadir</label>
-            
-            <input type="radio" id="tidak-hadir" name="kehadiran" value="Tidak Hadir" onchange="toggleKeterangan('tidak-hadir')" required>
-            <label for="tidak-hadir">Tidak Hadir</label>
-        </div>
-        
-        <!-- Keterangan untuk hadir -->
-        <div id="keterangan-hadir" class="keterangan-hadir">
-            <input type="radio" id="tepat-waktu" name="keterangan-hadir" value="Tepat Waktu">
-            <label for="tepat-waktu">Tepat Waktu</label>
-            
-            <input type="radio" id="terlambat" name="keterangan-hadir" value="Terlambat">
-            <label for="terlambat">Terlambat</label>
-        </div>
 
-        <!-- Keterangan untuk tidak hadir -->
-        <div id="keterangan-tidak-hadir" class="keterangan-tidak-hadir">
-            <input type="radio" id="ijin" name="keterangan-tidak-hadir" value="Ijin">
-            <label for="ijin">Ijin</label>
-            
-            <input type="radio" id="alpa" name="keterangan-tidak-hadir" value="Alpa">
-            <label for="alpa">Alpa</label>
+        <div id="absensi-karyawan" class="content">
+            <h2>Absensi Karyawan</h2>
+            <form onsubmit="return simpanAbsensi(event)">
+                <div class="form-group">
+                    <label for="nama-absensi">Nama Karyawan:</label>
+                    <select id="nama-absensi" name="nama-absensi" required>
+                        <!-- Nama karyawan akan diisi dari Firebase -->
+                    </select>
+                </div>
+                
+                <!-- Pilihan kehadiran -->
+                <div class="form-group">
+                    <label>Status Kehadiran:</label>
+                    <input type="radio" id="hadir" name="kehadiran" value="Hadir" onchange="toggleKeterangan('hadir')" required>
+                    <label for="hadir">Hadir</label>
+                    
+                    <input type="radio" id="tidak-hadir" name="kehadiran" value="Tidak Hadir" onchange="toggleKeterangan('tidak-hadir')" required>
+                    <label for="tidak-hadir">Tidak Hadir</label>
+                </div>
+                
+                <!-- Keterangan untuk hadir -->
+                <div id="keterangan-hadir" class="keterangan-hadir">
+                    <input type="radio" id="tepat-waktu" name="keterangan-hadir" value="Tepat Waktu">
+                    <label for="tepat-waktu">Tepat Waktu</label>
+                    
+                    <input type="radio" id="terlambat" name="keterangan-hadir" value="Terlambat">
+                    <label for="terlambat">Terlambat</label>
+                </div>
+
+                <!-- Keterangan untuk tidak hadir -->
+                <div id="keterangan-tidak-hadir" class="keterangan-tidak-hadir">
+                    <input type="radio" id="ijin" name="keterangan-tidak-hadir" value="Ijin">
+                    <label for="ijin">Ijin</label>
+                    
+                    <input type="radio" id="alpa" name="keterangan-tidak-hadir" value="Alpa">
+                    <label for="alpa">Alpa</label>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit">Simpan Absensi</button>
+                </div>
+            </form>
         </div>
         
-        <div class="form-group">
-            <button type="submit">Simpan Absensi</button>
-        </div>
-    </form>
-</div>
-       
-
         <div id="pendaftaran-karyawan" class="content">
             <h2>Pendaftaran Karyawan</h2>
             <form onsubmit="return tambahKaryawan(event)">
@@ -112,6 +114,8 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

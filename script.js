@@ -1,18 +1,3 @@
-// Inisialisasi Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyChE-rVOFAzceI9PGr8KrB2I094UTC3QPo",
-    authDomain: "webabsensi-a707f.firebaseapp.com",
-    projectId: "webabsensi-a707f",
-    storageBucket: "webabsensi-a707f.appspot.com",
-    messagingSenderId: "466120916658",
-    appId: "1:466120916658:web:6e1c01e3b62ad98bbd93ab",
-    measurementId: "G-RSELYCHW99"
-};
-
-// Inisialisasi aplikasi Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const database = firebase.database(app);
-
 // Fungsi untuk menampilkan konten sesuai dengan menu yang diklik
 function showContent(sectionId) {
     // Sembunyikan semua konten
@@ -41,41 +26,59 @@ function simpanAbsensi(event) {
         keterangan = document.querySelector('input[name="keterangan-tidak-hadir"]:checked').value;
     }
 
-    alert(`Absensi disimpan!\nNama: ${namaKaryawan}\nKehadiran: ${kehadiran}\nKeterangan: ${keterangan}`);
+    const absensiRef = firebase.database().ref('absensi/' + new Date().toISOString().split('T')[0]); // Menyimpan berdasarkan tanggal
+    absensiRef.push({
+        namaKaryawan: namaKaryawan,
+        kehadiran: kehadiran,
+        keterangan: keterangan
+    }).then(() => {
+        alert(`Absensi disimpan!\nNama: ${namaKaryawan}\nKehadiran: ${kehadiran}\nKeterangan: ${keterangan}`);
+    }).catch(error => {
+        console.error('Error menambahkan data:', error);
+    });
 }
 
 // Fungsi untuk menambah karyawan
 function tambahKaryawan(event) {
     event.preventDefault();
     const nama = document.getElementById('nama').value;
+    const list = document.getElementById('nama-karyawan-list');
 
-    // Menyimpan data ke Firebase Realtime Database
-    const karyawanRef = database.ref('karyawan').push();
-    karyawanRef.set({
-        nama: nama
-    })
-    .then(() => {
+    const listItem = document.createElement('li');
+    listItem.textContent = nama;
+    list.appendChild(listItem);
+
+    const karyawanRef = firebase.database().ref('karyawan');
+    karyawanRef.push({ nama: nama }).then(() => {
         alert(`Karyawan ${nama} telah ditambahkan.`);
-        
-        // Tambahkan nama karyawan ke daftar di halaman
-        const list = document.getElementById('nama-karyawan-list');
-        const listItem = document.createElement('li');
-        listItem.textContent = nama;
-        list.appendChild(listItem);
-    })
-    .catch(error => {
-        console.error('Error menambahkan karyawan: ', error);
+    }).catch(error => {
+        console.error('Error menambahkan karyawan:', error);
     });
-
-    // Kosongkan input setelah menambah karyawan
-    document.getElementById('nama').value = '';
 }
 
-// Fungsi untuk melihat laporan (ini hanya placeholder)
+// Fungsi untuk melihat laporan
 function lihatLaporan(event) {
     event.preventDefault();
     const tanggal = document.getElementById('tanggal').value;
-    alert(`Menampilkan laporan untuk tanggal: ${tanggal}`);
+
+    const laporanRef = firebase.database().ref('absensi/' + tanggal);
+    laporanRef.once('value', (snapshot) => {
+        const laporanList = document.getElementById('laporan-list');
+        laporanList.innerHTML = ''; // Kosongkan daftar sebelumnya
+
+        snapshot.forEach(childSnapshot => {
+            const data = childSnapshot.val();
+            const listItem = document.createElement('li');
+            listItem.textContent = `Nama: ${data.namaKaryawan}, Kehadiran: ${data.kehadiran}, Keterangan: ${data.keterangan}`;
+            laporanList.appendChild(listItem);
+        });
+
+        if (!snapshot.exists()) {
+            laporanList.innerHTML = 'Tidak ada data untuk tanggal ini.';
+        }
+    }).catch(error => {
+        console.error('Error mengambil data laporan:', error);
+    });
 }
 
 // Fungsi untuk menampilkan atau menyembunyikan keterangan absensi

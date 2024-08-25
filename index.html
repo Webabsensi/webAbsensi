@@ -41,9 +41,7 @@
             <form onsubmit="return simpanAbsensi(event)">
                 <div class="form-group">
                     <label for="nama-absensi">Nama Karyawan:</label>
-                    <select id="nama-absensi" name="nama-absensi" required>
-                        <!-- Nama karyawan akan diisi dari Firebase -->
-                    </select>
+                    <input type="text" id="nama-absensi" name="nama-absensi" required>
                 </div>
                 
                 <!-- Pilihan kehadiran -->
@@ -79,7 +77,7 @@
                 </div>
             </form>
         </div>
-        
+
         <div id="pendaftaran-karyawan" class="content">
             <h2>Pendaftaran Karyawan</h2>
             <form onsubmit="return tambahKaryawan(event)">
@@ -104,6 +102,9 @@
                     <button type="submit">Lihat Laporan</button>
                 </div>
             </form>
+            <ul id="laporan-list">
+                <!-- Daftar laporan harian akan ditampilkan di sini -->
+            </ul>
         </div>
 
         <div id="nama-karyawan" class="content">
@@ -114,14 +115,14 @@
         </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <!-- Firebase App (SDK) -->
-    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
+     <!-- Firebase App (SDK) -->
+     <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-app.js"></script>
 
-    <!-- Firebase Realtime Database (SDK) -->
-    <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js"></script>
-
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+     <!-- Firebase Realtime Database (SDK) -->
+     <script src="https://www.gstatic.com/firebasejs/9.14.0/firebase-database.js"></script>
+ 
+    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-database.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

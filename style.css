@@ -119,3 +119,21 @@ button:hover {
     margin-right: 10px; /* Memberikan ruang antara radio button dan teks */
     margin-left: 0; /* Menghapus margin kiri jika ada */
 }
+#message-box {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d6e9c6;
+    padding: 10px;
+    margin-top: 15px;
+    display: none; /* Sembunyikan pesan secara default */
+    border-radius: 4px;
+}
+
+/* Style untuk laporan */
+#laporan-box {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 4px;
+}

@@ -52,7 +52,13 @@ function simpanAbsensi(event) {
         keterangan: keterangan
     });
 
-    alert(`Absensi disimpan!\nNama: ${namaKaryawan}\nTanggal: ${tanggal}\nKehadiran: ${kehadiran}\nKeterangan: ${keterangan}`);
+    // Reset form setelah menyimpan absensi
+    document.getElementById('absensi-form').reset();
+
+    // Tampilkan pesan sukses tanpa alert
+    const messageBox = document.getElementById('message-box');
+    messageBox.textContent = `Absensi disimpan!\nNama: ${namaKaryawan}\nTanggal: ${tanggal}\nKehadiran: ${kehadiran}\nKeterangan: ${keterangan}`;
+    messageBox.style.display = 'block';
 }
 
 // Fungsi untuk menambah karyawan
@@ -64,7 +70,11 @@ function tambahKaryawan(event) {
     });
 
     updateNamaKaryawanList();
-    alert(`Karyawan ${nama} telah ditambahkan.`);
+
+    // Tampilkan pesan sukses tanpa alert
+    const messageBox = document.getElementById('message-box');
+    messageBox.textContent = `Karyawan ${nama} telah ditambahkan.`;
+    messageBox.style.display = 'block';
 }
 
 // Fungsi untuk memperbarui daftar nama karyawan
@@ -106,15 +116,21 @@ function updateNamaKaryawanList() {
 function lihatLaporan(event) {
     event.preventDefault();
     const tanggal = document.getElementById('tanggal').value;
+    const laporanBox = document.getElementById('laporan-box');
+    laporanBox.innerHTML = '';
 
     // Ambil data dari Firebase dan tampilkan
     database.ref('absensi/' + tanggal).once('value', snapshot => {
-        let laporan = `Laporan untuk tanggal: ${tanggal}\n\n`;
-        snapshot.forEach(childSnapshot => {
-            const data = childSnapshot.val();
-            laporan += `Nama: ${data.nama}, Tanggal: ${data.tanggal}, Kehadiran: ${data.kehadiran}, Keterangan: ${data.keterangan}\n`;
-        });
-        alert(laporan);
+        if (snapshot.exists()) {
+            snapshot.forEach(childSnapshot => {
+                const data = childSnapshot.val();
+                const laporanItem = document.createElement('div');
+                laporanItem.textContent = `Nama: ${data.nama}, Tanggal: ${data.tanggal}, Kehadiran: ${data.kehadiran}, Keterangan: ${data.keterangan}`;
+                laporanBox.appendChild(laporanItem);
+            });
+        } else {
+            laporanBox.textContent = 'Tidak ada laporan untuk tanggal tersebut.';
+        }
     });
 }
 
@@ -141,8 +157,12 @@ function hapusKaryawan(event) {
         // Hapus karyawan dari Firebase
         database.ref('karyawan/' + key).remove()
             .then(() => {
-                alert('Karyawan berhasil dihapus.');
                 updateNamaKaryawanList();
+
+                // Tampilkan pesan sukses tanpa alert
+                const messageBox = document.getElementById('message-box');
+                messageBox.textContent = 'Karyawan berhasil dihapus.';
+                messageBox.style.display = 'block';
             })
             .catch(error => {
                 console.error('Error saat menghapus karyawan:', error);

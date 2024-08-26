@@ -25,13 +25,20 @@ function showContent(sectionId) {
     }
 }
 
+// Fungsi untuk menampilkan pesan ke message-box
+function showMessage(message, isError = false) {
+    const messageBox = document.getElementById('message-box');
+    messageBox.style.display = 'block';
+    messageBox.style.color = isError ? 'red' : 'green';
+    messageBox.textContent = message;
+}
+
 // Fungsi untuk menyimpan absensi
 function simpanAbsensi(event) {
     event.preventDefault();
 
     const namaKaryawan = document.getElementById('nama-absensi').value;
     const kehadiran = document.querySelector('input[name="kehadiran"]:checked').value;
-
     let keterangan = '';
     if (kehadiran === 'Hadir') {
         keterangan = document.querySelector('input[name="keterangan-hadir"]:checked').value;
@@ -41,24 +48,43 @@ function simpanAbsensi(event) {
 
     const tanggal = new Date().toISOString().split('T')[0];
 
-    // Simpan data ke Firebase dengan ID yang otomatis di-generate
     const absensiRef = database.ref('absensi/' + tanggal).push();
-
     absensiRef.set({
         id: absensiRef.key,
         nama: namaKaryawan,
         tanggal: tanggal,
         kehadiran: kehadiran,
         keterangan: keterangan
+    }).then(() => {
+        showMessage(`Absensi disimpan!\nNama: ${namaKaryawan}\nTanggal: ${tanggal}\nKehadiran: ${kehadiran}\nKeterangan: ${keterangan}`);
+        resetFormAbsensi(); // Reset form setelah berhasil menyimpan absensi
+    }).catch(error => {
+        showMessage('Terjadi kesalahan saat menyimpan absensi.', true);
+        console.error('Error saat menyimpan absensi:', error);
     });
+}
 
-    // Reset form setelah menyimpan absensi
-    document.getElementById('absensi-form').reset();
+// Fungsi untuk menampilkan atau menyembunyikan keterangan absensi
+function toggleKeterangan(kehadiran) {
+    const keteranganHadir = document.getElementById('keterangan-hadir');
+    const keteranganTidakHadir = document.getElementById('keterangan-tidak-hadir');
 
-    // Tampilkan pesan sukses tanpa alert
-    const messageBox = document.getElementById('message-box');
-    messageBox.textContent = `Absensi disimpan!\nNama: ${namaKaryawan}\nTanggal: ${tanggal}\nKehadiran: ${kehadiran}\nKeterangan: ${keterangan}`;
-    messageBox.style.display = 'block';
+    if (kehadiran === 'Hadir') {
+        keteranganHadir.style.display = 'block';
+        keteranganTidakHadir.style.display = 'none';
+    } else if (kehadiran === 'Tidak Hadir') {
+        keteranganHadir.style.display = 'none';
+        keteranganTidakHadir.style.display = 'block';
+    } else {
+        keteranganHadir.style.display = 'none';
+        keteranganTidakHadir.style.display = 'none';
+    }
+}
+
+// Fungsi untuk mereset form absensi
+function resetFormAbsensi() {
+    document.getElementById('absensi-form').reset(); // Asumsi form absensi memiliki ID 'absensi-form'
+    toggleKeterangan(''); // Sembunyikan semua keterangan
 }
 
 // Fungsi untuk menambah karyawan
@@ -67,14 +93,13 @@ function tambahKaryawan(event) {
     const nama = document.getElementById('nama').value;
     database.ref('karyawan/').push({
         nama: nama
+    }).then(() => {
+        updateNamaKaryawanList();
+        showMessage(`Karyawan ${nama} telah ditambahkan.`);
+    }).catch(error => {
+        showMessage('Terjadi kesalahan saat menambahkan karyawan.', true);
+        console.error('Error saat menambah karyawan:', error);
     });
-
-    updateNamaKaryawanList();
-
-    // Tampilkan pesan sukses tanpa alert
-    const messageBox = document.getElementById('message-box');
-    messageBox.textContent = `Karyawan ${nama} telah ditambahkan.`;
-    messageBox.style.display = 'block';
 }
 
 // Fungsi untuk memperbarui daftar nama karyawan
@@ -116,36 +141,23 @@ function updateNamaKaryawanList() {
 function lihatLaporan(event) {
     event.preventDefault();
     const tanggal = document.getElementById('tanggal').value;
-    const laporanBox = document.getElementById('laporan-box');
-    laporanBox.innerHTML = '';
 
     // Ambil data dari Firebase dan tampilkan
     database.ref('absensi/' + tanggal).once('value', snapshot => {
+        let laporan = `Laporan untuk tanggal: ${tanggal}\n\n`;
         if (snapshot.exists()) {
             snapshot.forEach(childSnapshot => {
                 const data = childSnapshot.val();
-                const laporanItem = document.createElement('div');
-                laporanItem.textContent = `Nama: ${data.nama}, Tanggal: ${data.tanggal}, Kehadiran: ${data.kehadiran}, Keterangan: ${data.keterangan}`;
-                laporanBox.appendChild(laporanItem);
+                laporan += `Nama: ${data.nama}, Tanggal: ${data.tanggal}, Kehadiran: ${data.kehadiran}, Keterangan: ${data.keterangan}\n`;
             });
+            showMessage(laporan);
         } else {
-            laporanBox.textContent = 'Tidak ada laporan untuk tanggal tersebut.';
+            showMessage('Tidak ada laporan untuk tanggal ini.', true);
         }
+    }).catch(error => {
+        showMessage('Terjadi kesalahan saat mengambil laporan.', true);
+        console.error('Error saat melihat laporan:', error);
     });
-}
-
-// Fungsi untuk menampilkan atau menyembunyikan keterangan absensi
-function toggleKeterangan(kehadiran) {
-    const keteranganHadir = document.getElementById('keterangan-hadir');
-    const keteranganTidakHadir = document.getElementById('keterangan-tidak-hadir');
-
-    if (kehadiran === 'Hadir') {
-        keteranganHadir.style.display = 'block';
-        keteranganTidakHadir.style.display = 'none';
-    } else if (kehadiran === 'Tidak Hadir') {
-        keteranganHadir.style.display = 'none';
-        keteranganTidakHadir.style.display = 'block';
-    }
 }
 
 // Fungsi untuk menghapus karyawan
@@ -157,14 +169,11 @@ function hapusKaryawan(event) {
         // Hapus karyawan dari Firebase
         database.ref('karyawan/' + key).remove()
             .then(() => {
+                showMessage('Karyawan berhasil dihapus.');
                 updateNamaKaryawanList();
-
-                // Tampilkan pesan sukses tanpa alert
-                const messageBox = document.getElementById('message-box');
-                messageBox.textContent = 'Karyawan berhasil dihapus.';
-                messageBox.style.display = 'block';
             })
             .catch(error => {
+                showMessage('Terjadi kesalahan saat menghapus karyawan.', true);
                 console.error('Error saat menghapus karyawan:', error);
             });
     }

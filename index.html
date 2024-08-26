@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -26,6 +27,7 @@
             <div class="dropdown-content">
                 <a href="#" onclick="showContent('nama-karyawan')">Nama Karyawan</a>
                 <a href="#" onclick="showContent('pendaftaran-karyawan')">Pendaftaran Karyawan</a>
+                <a href="#" onclick="showContent('hapus-karyawan')">Hapus Karyawan</a>
             </div>
         </div>
     </div>
@@ -112,10 +114,25 @@
                 <!-- Daftar nama karyawan akan ditampilkan di sini -->
             </ul>
         </div>
+
+        <div id="hapus-karyawan" class="content">
+            <h2>Hapus Karyawan</h2>
+            <form onsubmit="return hapusKaryawan(event)">
+                <div class="form-group">
+                    <label for="nama-karyawan-hapus">Nama Karyawan:</label>
+                    <select id="nama-karyawan-hapus" name="nama-karyawan-hapus" required>
+                        <!-- Nama karyawan akan diisi dari Firebase -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Hapus Karyawan</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
     <script src="script.js"></script>
 </body>
-</html>
+</html

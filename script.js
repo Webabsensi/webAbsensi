@@ -16,7 +16,7 @@ const database = firebase.database();
 function showContent(sectionId) {
     const contents = document.querySelectorAll('.content');
     contents.forEach(content => content.style.display = 'none');
-    
+
     const section = document.getElementById(sectionId);
     if (section) {
         section.style.display = 'block';
@@ -28,9 +28,10 @@ function showContent(sectionId) {
 // Fungsi untuk menyimpan absensi
 function simpanAbsensi(event) {
     event.preventDefault();
+
     const namaKaryawan = document.getElementById('nama-absensi').value;
     const kehadiran = document.querySelector('input[name="kehadiran"]:checked').value;
-    
+
     let keterangan = '';
     if (kehadiran === 'Hadir') {
         keterangan = document.querySelector('input[name="keterangan-hadir"]:checked').value;
@@ -40,14 +41,18 @@ function simpanAbsensi(event) {
 
     const tanggal = new Date().toISOString().split('T')[0];
 
-    // Simpan data ke Firebase
-    database.ref('absensi/' + tanggal).push({
+    // Simpan data ke Firebase dengan ID yang otomatis di-generate
+    const absensiRef = database.ref('absensi/' + tanggal).push();
+
+    absensiRef.set({
+        id: absensiRef.key,
         nama: namaKaryawan,
+        tanggal: tanggal,
         kehadiran: kehadiran,
         keterangan: keterangan
     });
 
-    alert(`Absensi disimpan!\nNama: ${namaKaryawan}\nKehadiran: ${kehadiran}\nKeterangan: ${keterangan}`);
+    alert(`Absensi disimpan!\nNama: ${namaKaryawan}\nTanggal: ${tanggal}\nKehadiran: ${kehadiran}\nKeterangan: ${keterangan}`);
 }
 
 // Fungsi untuk menambah karyawan
@@ -66,25 +71,38 @@ function tambahKaryawan(event) {
 function updateNamaKaryawanList() {
     const list = document.getElementById('nama-karyawan-list');
     const namaAbsensi = document.getElementById('nama-absensi');
+    const namaKaryawanHapus = document.getElementById('nama-karyawan-hapus');
+    
     list.innerHTML = '';
     namaAbsensi.innerHTML = '';
+    namaKaryawanHapus.innerHTML = '';
 
     database.ref('karyawan/').once('value', snapshot => {
         snapshot.forEach(childSnapshot => {
             const karyawan = childSnapshot.val();
+            const key = childSnapshot.key;
+
+            // Tampilkan daftar karyawan di halaman nama karyawan
             const listItem = document.createElement('li');
             listItem.textContent = karyawan.nama;
             list.appendChild(listItem);
 
+            // Tambahkan nama karyawan di pilihan absensi
             const optionItem = document.createElement('option');
-            optionItem.value = karyawan.nama;
+            optionItem.value = key; // Menggunakan key sebagai value
             optionItem.textContent = karyawan.nama;
             namaAbsensi.appendChild(optionItem);
+
+            // Tambahkan nama karyawan di pilihan penghapusan karyawan
+            const optionItemHapus = document.createElement('option');
+            optionItemHapus.value = key; // Menggunakan key sebagai value
+            optionItemHapus.textContent = karyawan.nama;
+            namaKaryawanHapus.appendChild(optionItemHapus);
         });
     });
 }
 
-// Fungsi untuk melihat laporan (ini hanya placeholder)
+// Fungsi untuk melihat laporan harian
 function lihatLaporan(event) {
     event.preventDefault();
     const tanggal = document.getElementById('tanggal').value;
@@ -94,7 +112,7 @@ function lihatLaporan(event) {
         let laporan = `Laporan untuk tanggal: ${tanggal}\n\n`;
         snapshot.forEach(childSnapshot => {
             const data = childSnapshot.val();
-            laporan += `Nama: ${data.nama}, Kehadiran: ${data.kehadiran}, Keterangan: ${data.keterangan}\n`;
+            laporan += `Nama: ${data.nama}, Tanggal: ${data.tanggal}, Kehadiran: ${data.kehadiran}, Keterangan: ${data.keterangan}\n`;
         });
         alert(laporan);
     });
@@ -105,12 +123,30 @@ function toggleKeterangan(kehadiran) {
     const keteranganHadir = document.getElementById('keterangan-hadir');
     const keteranganTidakHadir = document.getElementById('keterangan-tidak-hadir');
 
-    if (kehadiran === 'hadir') {
+    if (kehadiran === 'Hadir') {
         keteranganHadir.style.display = 'block';
         keteranganTidakHadir.style.display = 'none';
-    } else if (kehadiran === 'tidak-hadir') {
+    } else if (kehadiran === 'Tidak Hadir') {
         keteranganHadir.style.display = 'none';
         keteranganTidakHadir.style.display = 'block';
+    }
+}
+
+// Fungsi untuk menghapus karyawan
+function hapusKaryawan(event) {
+    event.preventDefault();
+    const key = document.getElementById('nama-karyawan-hapus').value;
+
+    if (confirm('Apakah Anda yakin ingin menghapus karyawan ini?')) {
+        // Hapus karyawan dari Firebase
+        database.ref('karyawan/' + key).remove()
+            .then(() => {
+                alert('Karyawan berhasil dihapus.');
+                updateNamaKaryawanList();
+            })
+            .catch(error => {
+                console.error('Error saat menghapus karyawan:', error);
+            });
     }
 }
 

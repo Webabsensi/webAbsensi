@@ -47,22 +47,38 @@ function simpanAbsensi(event) {
     }
 
     const tanggal = new Date().toISOString().split('T')[0];
+    const jam = new Date().toTimeString().split(' ')[0]; // Ambil waktu saat ini dalam format HH:MM:SS
 
-    const absensiRef = database.ref('absensi/' + tanggal).push();
-    absensiRef.set({
-        id: absensiRef.key,
-        nama: namaKaryawan,
-        tanggal: tanggal,
-        kehadiran: kehadiran,
-        keterangan: keterangan
-    }).then(() => {
-        showMessage(`Absensi disimpan!\nNama: ${namaKaryawan}\nTanggal: ${tanggal}\nKehadiran: ${kehadiran}\nKeterangan: ${keterangan}`);
-        resetFormAbsensi(); // Reset form setelah berhasil menyimpan absensi
-    }).catch(error => {
-        showMessage('Terjadi kesalahan saat menyimpan absensi.', true);
-        console.error('Error saat menyimpan absensi:', error);
+    // Ambil nama karyawan dari Firebase berdasarkan ID
+    database.ref('karyawan/').once('value', snapshot => {
+        let namaKaryawanTersimpan = '';
+        snapshot.forEach(childSnapshot => {
+            if (childSnapshot.key === namaKaryawan) {
+                namaKaryawanTersimpan = childSnapshot.val().nama;
+            }
+        });
+
+        if (namaKaryawanTersimpan) {
+            const absensiRef = database.ref('absensi/' + tanggal).push();
+            absensiRef.set({
+                nama: namaKaryawanTersimpan, // Urutan pertama
+                kehadiran: kehadiran,       // Urutan kedua
+                keterangan: keterangan,     // Urutan ketiga
+                jam: jam,                   // Urutan keempat
+                tanggal: tanggal            // Urutan kelima
+            }).then(() => {
+                showMessage(`Absensi disimpan!\nNama: ${namaKaryawanTersimpan}\nTanggal: ${tanggal}\nJam: ${jam}\nKehadiran: ${kehadiran}\nKeterangan: ${keterangan}`);
+                resetFormAbsensi(); // Reset form setelah berhasil menyimpan absensi
+            }).catch(error => {
+                showMessage('Terjadi kesalahan saat menyimpan absensi.', true);
+                console.error('Error saat menyimpan absensi:', error);
+            });
+        } else {
+            showMessage('Nama karyawan tidak ditemukan.', true);
+        }
     });
 }
+
 
 // Fungsi untuk menampilkan atau menyembunyikan keterangan absensi
 function toggleKeterangan(kehadiran) {
@@ -148,7 +164,7 @@ function lihatLaporan(event) {
         if (snapshot.exists()) {
             snapshot.forEach(childSnapshot => {
                 const data = childSnapshot.val();
-                laporan += `Nama: ${data.nama}, Tanggal: ${data.tanggal}, Kehadiran: ${data.kehadiran}, Keterangan: ${data.keterangan}\n`;
+                laporan += `Nama: ${data.nama}, Kehadiran: ${data.kehadiran}, Keterangan: ${data.keterangan}, Jam: ${data.jam}, Tanggal: ${data.tanggal}\n`;
             });
             showMessage(laporan);
         } else {
@@ -183,4 +199,5 @@ function hapusKaryawan(event) {
 document.addEventListener('DOMContentLoaded', () => {
     showContent('menu-utama');
     updateNamaKaryawanList();
+    toggleKeterangan();
 });

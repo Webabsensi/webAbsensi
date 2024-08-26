@@ -35,10 +35,6 @@ body {
     color: black;
 }
 
-.dropdown-content a:hover {
-    background-color: #f1f1f1;
-}
-
 .dropdown-content {
     display: none;
     position: absolute;
@@ -58,6 +54,10 @@ body {
     text-decoration: none;
     display: block;
     text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
 }
 
 /* Style untuk container dan konten */
@@ -108,17 +108,23 @@ button:hover {
 }
 
 /* Style untuk keterangan hadir dan tidak hadir */
+.keterangan-hadir, .keterangan-tidak-hadir {
+    display: flex; /* Menggunakan flexbox untuk penyelarasan */
+    align-items: center; /* Menyelaraskan secara vertikal */
+    margin-bottom: 10px; /* Menambahkan jarak antar item */
+}
+
 .keterangan-hadir label, .keterangan-tidak-hadir label {
     display: flex; /* Menggunakan flexbox untuk penyelarasan */
     align-items: center; /* Menyelaraskan secara vertikal */
-    margin-bottom: 5px; /* Menambahkan margin di bawah setiap label */
+    margin-left: 5px; /* Menambahkan margin di sebelah kiri label untuk jarak dengan radio button */
 }
 
 .keterangan-hadir input[type="radio"], .keterangan-tidak-hadir input[type="radio"] {
-    width: auto; /* Memastikan radio button tidak melebihi ukuran default */
     margin-right: 10px; /* Memberikan ruang antara radio button dan teks */
-    margin-left: 0; /* Menghapus margin kiri jika ada */
 }
+
+/* Style untuk pesan dan laporan */
 #message-box {
     background-color: #dff0d8;
     color: #3c763d;
@@ -129,7 +135,6 @@ button:hover {
     border-radius: 4px;
 }
 
-/* Style untuk laporan */
 #laporan-box {
     background-color: #f9f9f9;
     border: 1px solid #ddd;

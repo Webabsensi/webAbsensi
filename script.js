@@ -79,7 +79,6 @@ function simpanAbsensi(event) {
     });
 }
 
-
 // Fungsi untuk menampilkan atau menyembunyikan keterangan absensi
 function toggleKeterangan(kehadiran) {
     const keteranganHadir = document.getElementById('keterangan-hadir');
@@ -123,7 +122,7 @@ function updateNamaKaryawanList() {
     const list = document.getElementById('nama-karyawan-list');
     const namaAbsensi = document.getElementById('nama-absensi');
     const namaKaryawanHapus = document.getElementById('nama-karyawan-hapus');
-    
+
     list.innerHTML = '';
     namaAbsensi.innerHTML = '';
     namaKaryawanHapus.innerHTML = '';
@@ -164,7 +163,12 @@ function lihatLaporan(event) {
         if (snapshot.exists()) {
             snapshot.forEach(childSnapshot => {
                 const data = childSnapshot.val();
-                laporan += `Nama: ${data.nama}, Kehadiran: ${data.kehadiran}, Keterangan: ${data.keterangan}, Jam: ${data.jam}, Tanggal: ${data.tanggal}\n`;
+                // Menampilkan data dengan urutan yang diinginkan
+                laporan += `Nama: ${data.nama}\n`;
+                laporan += `Kehadiran: ${data.kehadiran}\n`;
+                laporan += `Keterangan: ${data.keterangan}\n`;
+                laporan += `Jam: ${data.jam}\n`;
+                laporan += `Tanggal: ${data.tanggal}\n\n`;
             });
             showMessage(laporan);
         } else {
